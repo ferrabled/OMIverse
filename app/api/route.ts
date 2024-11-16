@@ -18,25 +18,29 @@ function extractMessages(
   endPhrases: string[],
 ): string[] {
   const messages: string[] = [];
+  const lowerText = text.toLowerCase();
   
   for (const startPhrase of startPhrases) {
-    const startIndex = text.indexOf(startPhrase);
+    const startIndex = lowerText.indexOf(startPhrase);
     if (startIndex !== -1) {
+      console.warn(`Start trigger detected: "${startPhrase}"`);
       // Find the position after the start phrase
       const contentStartIndex = startIndex + startPhrase.length;
       
       // Find the next end phrase after this position
       let endIndex = -1;
       for (const endPhrase of endPhrases) {
-        const foundEndIndex = text.indexOf(endPhrase, contentStartIndex);
+        const foundEndIndex = lowerText.indexOf(endPhrase, contentStartIndex);
         if (foundEndIndex !== -1 && (endIndex === -1 || foundEndIndex < endIndex)) {
           endIndex = foundEndIndex;
+          console.warn(`End trigger detected: "${endPhrase}"`);
         }
       }
 
       if (endIndex !== -1) {
-        // Extract the message between start and end phrases
+        // Extract the message between start and end phrases using original text
         let message = text.substring(contentStartIndex, endIndex).trim();
+        console.warn("Complete extracted chunk:", text.substring(startIndex, endIndex + END_TRIGGER_PHRASES[0].length));
         message = message.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
         console.info("Found message between triggers:", message);
         messages.push(message);
