@@ -1,5 +1,11 @@
 import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
+import { PinataSDK } from "pinata-web3";
+
+const pinata = new PinataSDK({
+  pinataJwt: process.env.PINATA_JWT!,
+  pinataGateway: "example-gateway.mypinata.cloud",
+});
 
 let isRecording = false;
 let recordedMessage: string[] = [];
@@ -48,12 +54,14 @@ async function handleClosingTrigger(message: string): Promise<string[]> {
       throw new Error("No image URL received from generation");
     }
 
+    const pinataUpload = await uploadToPinata(imageUrl);
+
     // You could add additional processing here, such as:
     // - Saving to a database
     // - Sending notifications
     // - Processing with additional AI services
 
-    console.log("Successfully processed closing trigger with image:", imageUrl);
+    console.log("Successfully processed closing trigger with image:", pinataUpload?.IpfsHash);
     
     return [message]; // Return the original message for now
   } catch (error) {
@@ -151,4 +159,14 @@ async function generateImage(prompt: string) {
 
   const data: GenerateImageResponse = await response.json();
   return data;
+}
+
+async function uploadToPinata(uri: string) {
+  try {
+    const upload = await pinata.upload.url(uri);
+    console.log("Uploaded to Pinata:", upload);
+    return upload;
+  } catch (error) {
+    console.error("Error uploading to Pinata:", error);
+  }
 }
