@@ -1,54 +1,41 @@
 import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 
+let isRecording = false;
+let recordedMessage: string[] = [];
 
-// Define trigger phrases for transaction and swap extraction
-const START_TRIGGER_PHRASES = [
-  "hello universe",
-];
-
-const END_TRIGGER_PHRASES = [
-  "bye universe"
-];
-
-// Function to extract transaction and swap messages from the transcript
 function extractMessages(
-  text: string,
-  startPhrases: string[],
-  endPhrases: string[],
+  text: string
 ): string[] {
-  const messages: string[] = [];
-  const lowerText = text.toLowerCase();
+  console.log("=== EXTRACT MESSAGES DEBUG ===");
+  console.log("Received text:", text);
+  const lowerText = text.toLowerCase().trim();
   
-  for (const startPhrase of startPhrases) {
-    const startIndex = lowerText.indexOf(startPhrase);
-    if (startIndex !== -1) {
-      console.warn(`Start trigger detected: "${startPhrase}"`);
-      // Find the position after the start phrase
-      const contentStartIndex = startIndex + startPhrase.length;
-      
-      // Find the next end phrase after this position
-      let endIndex = -1;
-      for (const endPhrase of endPhrases) {
-        const foundEndIndex = lowerText.indexOf(endPhrase, contentStartIndex);
-        if (foundEndIndex !== -1 && (endIndex === -1 || foundEndIndex < endIndex)) {
-          endIndex = foundEndIndex;
-          console.warn(`End trigger detected: "${endPhrase}"`);
-        }
-      }
-
-      if (endIndex !== -1) {
-        // Extract the message between start and end phrases using original text
-        let message = text.substring(contentStartIndex, endIndex).trim();
-        console.warn("Complete extracted chunk:", text.substring(startIndex, endIndex + END_TRIGGER_PHRASES[0].length));
-        message = message.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
-        console.info("Found message between triggers:", message);
-        messages.push(message);
-      }
-    }
+  // Check for start trigger
+  if (lowerText.includes("hello universe")) {
+    console.warn("Start trigger detected!");
+    isRecording = true;
+    recordedMessage = [];
+    return [];
   }
-
-  return messages;
+  
+  // Check for end trigger
+  if (lowerText.includes("universe") && isRecording) {
+    console.warn("End trigger detected!");
+    isRecording = false;
+    const finalMessage = recordedMessage.join(" ");
+    console.log("Final recorded message:", finalMessage);
+    recordedMessage = [];
+    return [finalMessage];
+  }
+  
+  // If we're recording, add the current text
+  if (isRecording) {
+    console.log("Recording:", text);
+    recordedMessage.push(text);
+  }
+  
+  return [];
 }
 
 export async function POST(request: NextRequest) {
@@ -70,9 +57,7 @@ export async function POST(request: NextRequest) {
     console.info("transcript: ", transcript);
 
     const transaction_messages = extractMessages(
-      transcript.toLowerCase(),
-      START_TRIGGER_PHRASES,
-      END_TRIGGER_PHRASES,
+      transcript.toLowerCase()
     );
 
     if (transaction_messages.length === 0) {
