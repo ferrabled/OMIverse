@@ -8,7 +8,8 @@ const START_TRIGGER_PHRASES = [
 ];
 
 const END_TRIGGER_PHRASES = [
-  "bye universe"
+  "bye universe",
+  "by universe"
 ];
 
 // Function to extract transaction and swap messages from the transcript
