@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 
 // Define trigger phrases for transaction and swap extraction
 const START_TRIGGER_PHRASES = [
-  "save universe",
+  "hello universe",
 ];
 
 const END_TRIGGER_PHRASES = [
-  "bye bye"
+  "bye universe"
 ];
 
 // Function to extract transaction and swap messages from the transcript
@@ -17,34 +17,30 @@ function extractMessages(
   startPhrases: string[],
   endPhrases: string[],
 ): string[] {
-  const words = text.split(' ');
   const messages: string[] = [];
-  let currentMessage: string[] = [];
-  let isCollecting = false;
+  
+  for (const startPhrase of startPhrases) {
+    const startIndex = text.indexOf(startPhrase);
+    if (startIndex !== -1) {
+      // Find the position after the start phrase
+      const contentStartIndex = startIndex + startPhrase.length;
+      
+      // Find the next end phrase after this position
+      let endIndex = -1;
+      for (const endPhrase of endPhrases) {
+        const foundEndIndex = text.indexOf(endPhrase, contentStartIndex);
+        if (foundEndIndex !== -1 && (endIndex === -1 || foundEndIndex < endIndex)) {
+          endIndex = foundEndIndex;
+        }
+      }
 
-  for (const word of words) {
-    // Check if we hit a start trigger
-    if (startPhrases.some(phrase => word.includes(phrase))) {
-      isCollecting = true;
-      currentMessage = [];
-      continue;
-    }
-
-    // Check if we hit an end trigger
-    if (endPhrases.some(phrase => word.includes(phrase))) {
-      if (isCollecting && currentMessage.length > 0) {
-        let message = currentMessage.join(' ').trim();
+      if (endIndex !== -1) {
+        // Extract the message between start and end phrases
+        let message = text.substring(contentStartIndex, endIndex).trim();
         message = message.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+        console.info("Found message between triggers:", message);
         messages.push(message);
       }
-      isCollecting = false;
-      currentMessage = [];
-      continue;
-    }
-
-    // Collect words if we're between triggers
-    if (isCollecting) {
-      currentMessage.push(word);
     }
   }
 
