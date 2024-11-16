@@ -33,7 +33,7 @@ async function extractMessages(
   
   // If we're recording, add the current text
   if (isRecording) {
-    console.log("Recording:", text);
+    //console.log("Recording:", text);
     recordedMessage.push(text);
   }
   
