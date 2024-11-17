@@ -13,6 +13,7 @@ const FLORIDA_LOCATION = [27.6648, -81.5158]
 const SEVILLE_LOCATION = [37.3891, -5.9845]
 const CAPETOWN_LOCATION = [-33.9249, 18.4241]
 const JAPAN_LOCATION = [36.2048, 138.2529]
+const BANGKOK_LOCATION = [13.7563, 100.5018]
 
 export default function Home() {
   return (
@@ -71,7 +72,7 @@ export default function Home() {
                       />
                       <p>Florida Memory</p>
                       <button 
-                        onClick={() => window.open('https://etherscan.io/tx/YOUR_FLORIDA_TRANSACTION_HASH', '_blank')}
+                        onClick={() => window.open('https://eth-sepolia.blockscout.com/tx/0xc4c548de85667d794e2fcd1a37d86d94e04323a5567a6b2dff6c4087dbfe1b5c', '_blank')}
                         style={{ 
                           backgroundColor: '#FFD700',
                           border: 'none',
@@ -96,7 +97,7 @@ export default function Home() {
                       />
                       <p>Seville Memory</p>
                       <button 
-                        onClick={() => window.open('https://etherscan.io/tx/YOUR_SEVILLE_TRANSACTION_HASH', '_blank')}
+                        onClick={() => window.open('https://eth-sepolia.blockscout.com/tx/0xc4c548de85667d794e2fcd1a37d86d94e04323a5567a6b2dff6c4087dbfe1b5c', '_blank')}
                         style={{ 
                           backgroundColor: '#FFD700',
                           border: 'none',
@@ -121,7 +122,7 @@ export default function Home() {
                       />
                       <p>Cape Town Memory</p>
                       <button 
-                        onClick={() => window.open('https://etherscan.io/tx/YOUR_CAPETOWN_TRANSACTION_HASH', '_blank')}
+                        onClick={() => window.open('https://eth-sepolia.blockscout.com/tx/0xc4c548de85667d794e2fcd1a37d86d94e04323a5567a6b2dff6c4087dbfe1b5c', '_blank')}
                         style={{ 
                           backgroundColor: '#FFD700',
                           border: 'none',
@@ -146,7 +147,32 @@ export default function Home() {
                       />
                       <p>Japan Memory</p>
                       <button 
-                        onClick={() => window.open('https://etherscan.io/tx/YOUR_JAPAN_TRANSACTION_HASH', '_blank')}
+                        onClick={() => window.open('https://eth-sepolia.blockscout.com/tx/0xc4c548de85667d794e2fcd1a37d86d94e04323a5567a6b2dff6c4087dbfe1b5c', '_blank')}
+                        style={{ 
+                          backgroundColor: '#FFD700',
+                          border: 'none',
+                          padding: '8px 16px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        View Transaction
+                      </button>
+                    </div>
+                  </Popup>
+                </Marker>
+                <Marker position={BANGKOK_LOCATION}>
+                  <Popup maxWidth="400">
+                    <div style={{ width: '350px' }}>
+                      <img 
+                        src="https://ipfs.io/ipfs/bafybeiavwsxivqxizjz3w2jq2j527w4lmuzc63pft5ipfayymv5ttglvr4" 
+                        alt="Bangkok Memory"
+                        style={{ width: '100%', height: 'auto' }}
+                      />
+                      <p>Bangkok Memory</p>
+                      <button 
+                        onClick={() => window.open('https://eth-sepolia.blockscout.com/tx/0xc4c548de85667d794e2fcd1a37d86d94e04323a5567a6b2dff6c4087dbfe1b5c', '_blank')}
                         style={{ 
                           backgroundColor: '#FFD700',
                           border: 'none',
